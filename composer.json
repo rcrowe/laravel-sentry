@@ -1,0 +1,23 @@
+{
+    "name": "rcrowe/laravel-sentry",
+    "description": "Tasty intergration of Laravel & Sentry for sweet reporting of your logs",
+    "keywords": ["laravel", "sentry", "error", "reporting"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rob Crowe",
+            "email": "hello@vivalacrowe.com"
+        }
+    ],
+    "require": {
+        "raven/raven": "0.6.*"
+    },
+    "require-dev": {
+        "illuminate/foundation": "4.0.*",
+        "illuminate/log": "4.0.*",
+        "mockery/mockery": "0.7.2"
+    },
+    "autoload": {
+        "classmap": ["src/", "tests/"]
+    }
+}

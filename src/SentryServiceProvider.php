@@ -21,14 +21,10 @@ class SentryServiceProvider extends ServiceProvider
     {
         // TODO: Grab these values from a config file
         $enabled = true;
-        $dsn     = '';
+        $dsn     = 'DSN_GOES_HERE';
         $level   = 'error';
 
         if ($enabled) {
-            // Check Sentry DSN is valid
-            // Throws an InvalidArgumentException if it isn't
-            Raven_Client::parseDSN($dsn);
-
             // Add the Raven handler to Monolog
             // Log::error(...) will then send a message straight to Sentry
             $sentry = new Log($this->app['log']->getMonolog());

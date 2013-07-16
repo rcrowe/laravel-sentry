@@ -20,9 +20,11 @@ class SentryServiceProvider extends ServiceProvider
     public function boot()
     {
         // TODO: Grab these values from a config file
-        $enabled = true;
-        $dsn     = 'DSN_GOES_HERE';
-        $level   = 'error';
+        $environments = array('prod', 'production');
+        $dsn          = 'DSN_GOES_HERE';
+        $level        = 'error';
+
+        $enabled = in_array($this->app['env'], $environments);
 
         if ($enabled) {
             // Add the Raven handler to Monolog

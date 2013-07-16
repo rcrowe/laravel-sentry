@@ -21,12 +21,12 @@ class SentryServiceProvider extends ServiceProvider
     {
         // TODO: Grab these values from a config file
         $environments = array('prod', 'production');
-        $dsn          = 'DSN_GOES_HERE';
+        $dsn          = '';
         $level        = 'error';
 
         $enabled = in_array($this->app['env'], $environments);
 
-        if ($enabled) {
+        if ($enabled AND !empty($dsn)) {
             // Add the Raven handler to Monolog
             // Log::error(...) will then send a message straight to Sentry
             $sentry = new Log($this->app['log']->getMonolog());

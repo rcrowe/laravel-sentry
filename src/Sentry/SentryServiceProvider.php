@@ -9,7 +9,7 @@ class SentryServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app['config']->package('rcrowe/sentry', __DIR__.'/config');
+        $this->app['config']->package('rcrowe/sentry', __DIR__.'/../config');
     }
 
     /**

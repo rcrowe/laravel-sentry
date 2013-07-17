@@ -9,7 +9,7 @@ class SentryServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app['config']->package('rcrowe/sentry', __DIR__.'/../config');
+        $this->app['config']->package('rcrowe/laravel-sentry', __DIR__.'/../config');
     }
 
     /**
@@ -20,9 +20,9 @@ class SentryServiceProvider extends ServiceProvider
     public function boot()
     {
         // Grab config
-        $environments = $this->app['config']->get('sentry::environments', array('prod', 'production'));
-        $dsn          = $this->app['config']->get('sentry::dsn', '');
-        $level        = $this->app['config']->get('sentry::level', 'error');
+        $environments = $this->app['config']->get('laravel-sentry::environments', array('prod', 'production'));
+        $dsn          = $this->app['config']->get('laravel-sentry::dsn', '');
+        $level        = $this->app['config']->get('laravel-sentry::level', 'error');
 
         // Running in a valid environment
         $enabled = in_array($this->app['env'], $environments);

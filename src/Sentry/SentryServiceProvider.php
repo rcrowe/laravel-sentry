@@ -9,7 +9,7 @@ class SentryServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        // TODO: Register config file
+        $this->app['config']->package('rcrowe/sentry', __DIR__.'/config');
     }
 
     /**
@@ -19,11 +19,12 @@ class SentryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // TODO: Grab these values from a config file
-        $environments = array('prod', 'production');
-        $dsn          = '';
-        $level        = 'error';
+        // Grab config
+        $environments = $this->app['config']->get('sentry::environments', array('prod', 'production'));
+        $dsn          = $this->app['config']->get('sentry::dsn', '');
+        $level        = $this->app['config']->get('sentry::level', 'error');
 
+        // Running in a valid environment
         $enabled = in_array($this->app['env'], $environments);
 
         if ($enabled AND !empty($dsn)) {

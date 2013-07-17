@@ -58,7 +58,7 @@ class Log extends Writer
         // Create Monolog Sentry handler
         $handler = new RavenHandler($client, $level);
 
-        // Set handler
+        // Add handler
         $this->getMonolog()->pushHandler($handler);
     }
 }

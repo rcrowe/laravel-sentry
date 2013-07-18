@@ -19,24 +19,17 @@ class SentryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Grab config
-        $environments = $this->app['config']->get('laravel-sentry::environments', array('prod', 'production'));
-        $dsn          = $this->app['config']->get('laravel-sentry::dsn', '');
-        $level        = $this->app['config']->get('laravel-sentry::level', 'error');
+        $sentry = new Log($this->app);
 
-        // Running in a valid environment
-        $enabled = in_array($this->app['env'], $environments);
+        // Set cleint to send to Sentry
+        $sentry->setRaven( new Raven_Client($sentry->getDsn()) );
 
-        if ($enabled AND !empty($dsn)) {
-            // Add the Raven handler to Monolog
-            // Log::error(...) will then send a message straight to Sentry
-            $sentry = new Log($this->app['log']->getMonolog());
-            $sentry->setRaven(new Raven_Client($dsn));
-            $sentry->addHandler($level);
+        // If enabled add Sentry handler to Monolog
+        $sentry->addHandler();
 
-            // Store Sentry in the IoC
-            // Useful for getting at the Raven client to send custom messages
-            $this->app->instance('sentry', $sentry);
-        }
+        // Store Sentry in the IoC
+        // Useful for getting at the Raven client to send custom messages
+        // @see rcrowe\Sentry\Log::getRaven()
+        $this->app->instance('sentry', $sentry);
     }
 }

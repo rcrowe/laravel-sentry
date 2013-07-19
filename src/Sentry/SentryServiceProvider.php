@@ -7,9 +7,16 @@ use Raven_Client;
 
 class SentryServiceProvider extends ServiceProvider
 {
+    protected $sentry;
+
     public function register()
     {
         $this->app['config']->package('rcrowe/laravel-sentry', __DIR__.'/../config');
+    }
+
+    public function setSentry(Log $log)
+    {
+        $this->sentry = $log;
     }
 
     /**
@@ -19,17 +26,17 @@ class SentryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $sentry = new Log($this->app);
+        $this->sentry OR $this->sentry = new Log($this->app);
 
         // Set cleint to send to Sentry
-        $sentry->setRaven( new Raven_Client($sentry->getDsn()) );
+        $this->sentry->setRaven( new Raven_Client($this->sentry->getDsn()) );
 
         // If enabled add Sentry handler to Monolog
-        $sentry->addHandler();
+        $this->sentry->addHandler();
 
         // Store Sentry in the IoC
         // Useful for getting at the Raven client to send custom messages
         // @see rcrowe\Sentry\Log::getRaven()
-        $this->app->instance('sentry', $sentry);
+        $this->app->instance('sentry', $this->sentry);
     }
 }

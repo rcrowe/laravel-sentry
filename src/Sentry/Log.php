@@ -27,10 +27,7 @@ class Log extends Writer
     public function __construct(Application $app = null)
     {
         parent::__construct($app['log']->getMonolog());
-
-        if ($app !== null) {
-            $this->setApp($app);
-        }
+        $this->setApp($app);
     }
 
     /**
@@ -87,8 +84,6 @@ class Log extends Writer
      * Set the Raven client used to send the message to Sentry.
      *
      * @param Raven_Client $client
-     *
-     * @return void
      */
     public function setRaven(Raven_Client $client)
     {
@@ -122,13 +117,13 @@ class Log extends Writer
      * Add Raven handler to Monolog.
      *
      * @param string $level Level at which we should send to Sentry.
-     *
-     * @return void
+     * @throws RuntimeException Raven client not set.
+     * @return bool Whether the handler was added.
      */
     public function addHandler()
     {
         if (!$this->isEnabled()) {
-            return;
+            return false;
         }
 
         // Make sure client has been set
@@ -146,5 +141,7 @@ class Log extends Writer
 
         // Add handler
         $this->getMonolog()->pushHandler($handler);
+
+        return true;
     }
 }

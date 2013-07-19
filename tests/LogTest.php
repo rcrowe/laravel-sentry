@@ -7,6 +7,7 @@ use Mockery as m;
 use Illuminate\Foundation\Application;
 use Illuminate\Config\Repository;
 use rcrowe\Sentry\Log;
+use RuntimeException;
 
 class LogTest extends PHPUnit_Framework_TestCase
 {
@@ -226,11 +227,111 @@ class LogTest extends PHPUnit_Framework_TestCase
 
     public function testAddHandlerNotEnabled()
     {
+        $app = new Application;
 
+        // Monolog
+        $log = m::mock('Illuminate\Log\Writer');
+        $log->shouldReceive('getMonolog')->andReturn(m::mock('Monolog\Logger'));
+        $app['log'] = $log;
+
+        // Config
+        $config = new Repository(m::mock('Illuminate\Config\LoaderInterface'), 'production');
+
+        $config->getLoader()->shouldReceive('addNamespace')->with('laravel-sentry', __DIR__);
+        $config->getLoader()->shouldReceive('cascadePackage')->andReturnUsing(function($env, $package, $group, $items) { return $items; });
+        $config->getLoader()->shouldReceive('exists')->with('environments', 'laravel-sentry')->andReturn(false);
+        $config->getLoader()->shouldReceive('exists')->with('dsn', 'laravel-sentry')->andReturn(false);
+        $config->getLoader()->shouldReceive('load')->with('production', 'config', 'laravel-sentry')->andReturn(
+            array(
+                'environments' => array('prod', 'production'),
+                'dsn'          => '',
+            )
+        );
+        $config->package('foo/laravel-sentry', __DIR__);
+        $app['config'] = $config;
+
+
+        $app['env'] = 'testing';
+        $log = new Log($app);
+
+        $this->assertFalse($log->addHandler());
+    }
+
+    public function testRavenNotSet()
+    {
+        $app = new Application;
+
+        // Monolog
+        $log = m::mock('Illuminate\Log\Writer');
+        $log->shouldReceive('getMonolog')->andReturn(m::mock('Monolog\Logger'));
+        $app['log'] = $log;
+
+        // Config
+        $config = new Repository(m::mock('Illuminate\Config\LoaderInterface'), 'production');
+
+        $config->getLoader()->shouldReceive('addNamespace')->with('laravel-sentry', __DIR__);
+        $config->getLoader()->shouldReceive('cascadePackage')->andReturnUsing(function($env, $package, $group, $items) { return $items; });
+        $config->getLoader()->shouldReceive('exists')->with('environments', 'laravel-sentry')->andReturn(false);
+        $config->getLoader()->shouldReceive('exists')->with('dsn', 'laravel-sentry')->andReturn(false);
+        $config->getLoader()->shouldReceive('load')->with('production', 'config', 'laravel-sentry')->andReturn(
+            array(
+                'environments' => array('prod', 'production'),
+                'dsn'          => 'http://example.com',
+            )
+        );
+        $config->package('foo/laravel-sentry', __DIR__);
+        $app['config'] = $config;
+
+
+        $app['env'] = 'production';
+        $log = new Log($app);
+
+        try {
+            $log->addHandler();
+            $this->assertFalse(true);
+        } catch (RuntimeException $ex) {
+            $this->assertEquals($ex->getMessage(), 'Raven client not set');
+        }
     }
 
     public function testAddHandlerEnabled()
     {
+        $app = new Application;
 
+        // Monolog
+        $log = m::mock('Illuminate\Log\Writer');
+        $monolog = m::mock('Monolog\Logger');
+        $monolog->shouldReceive('pushHandler')->once();
+        $log->shouldReceive('getMonolog')->andReturn($monolog);
+        $app['log'] = $log;
+
+        // Config
+        $config = new Repository(m::mock('Illuminate\Config\LoaderInterface'), 'production');
+
+        $config->getLoader()->shouldReceive('addNamespace')->with('laravel-sentry', __DIR__);
+        $config->getLoader()->shouldReceive('cascadePackage')->andReturnUsing(function($env, $package, $group, $items) { return $items; });
+        $config->getLoader()->shouldReceive('exists')->with('environments', 'laravel-sentry')->andReturn(false);
+        $config->getLoader()->shouldReceive('exists')->with('dsn', 'laravel-sentry')->andReturn(false);
+        $config->getLoader()->shouldReceive('exists')->with('level', 'laravel-sentry')->andReturn(false);
+        $config->getLoader()->shouldReceive('load')->with('production', 'config', 'laravel-sentry')->andReturn(
+            array(
+                'environments' => array('prod', 'production'),
+                'dsn'          => 'http://example.com',
+                'level'        => 'error',
+            )
+        );
+        $config->package('foo/laravel-sentry', __DIR__);
+        $app['config'] = $config;
+
+
+        $app['env'] = 'production';
+        $log = new Log($app);
+
+        // Raven
+        $raven = m::mock('Raven_Client');
+        $raven->shouldReceive('getFoo')->andReturn('BAR');
+        $log->setRaven($raven);
+
+        $log->addHandler();
     }
 }

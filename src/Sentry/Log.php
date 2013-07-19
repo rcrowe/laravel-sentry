@@ -1,10 +1,16 @@
 <?php
 
+/**
+ * Tasty intergration of Laravel & Sentry for sweet reporting of your logs
+ *
+ * @author Rob Crowe <hello@vivalacrowe.com>
+ * @license MIT
+ */
+
 namespace rcrowe\Sentry;
 
-use Illuminate\Foundation\Application;
-
 use Illuminate\Log\Writer;
+use Illuminate\Foundation\Application;
 use Monolog\Handler\RavenHandler;
 use Raven_Client;
 use RuntimeException;
@@ -22,7 +28,9 @@ class Log extends Writer
     protected $raven;
 
     /**
+     * Create a new instance.
      *
+     * @param Illuminate\Foundation\Application $app
      */
     public function __construct(Application $app = null)
     {

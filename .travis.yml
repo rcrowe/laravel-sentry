@@ -1,0 +1,20 @@
+language: php
+
+php:
+    - 5.3
+    - 5.4
+    - 5.5
+
+before_script:
+    - curl -s https://getcomposer.org/installer | php
+    - php ./composer.phar install --dev --prefer-source
+
+script: phpunit --configuration phpunit.xml.dist
+
+notifications:
+    email: false
+    campfire:
+        on_success: always
+        on_failure: always
+        rooms:
+            - secure: "RdaLNY3PkcXKY1TuN+OOLs4aHfL+T9n2uGQpChdSs8nsF7aQZ0yflSh3blSm\nRdmrYQrdD7dtCaYOkt9VZKNlX6wvjUgYqCbJ+RHeCsdDKZXO7D4ko+cBKhIp\ncPBt/BnjA0tubWmL9tHrPRRJkTU7KbQd6mvnR3YNcY+ISusgd9o="

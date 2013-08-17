@@ -1,7 +1,7 @@
 laravel-sentry
 ==============
 
-Tasty intergration of Laravel &amp; Sentry for sweet reporting of your logs
+Tasty integration of Laravel &amp; Sentry for sweet reporting of your logs
 
 [![Build Status](https://travis-ci.org/rcrowe/laravel-sentry.png?branch=master)](https://travis-ci.org/rcrowe/laravel-sentry)
 

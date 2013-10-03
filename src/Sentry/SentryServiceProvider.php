@@ -56,6 +56,6 @@ class SentryServiceProvider extends ServiceProvider
         // Store Sentry in the IoC
         // Useful for getting at the Raven client to send custom messages
         // @see rcrowe\Sentry\Log::getRaven()
-        $this->app->instance('sentry', $this->sentry);
+        $this->app->instance('log.sentry', $this->sentry);
     }
 }

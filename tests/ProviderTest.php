@@ -33,13 +33,13 @@ class ProviderTest extends PHPUnit_Framework_TestCase
     {
         $app = $this->getApplication();
 
-        $this->assertFalse($app->bound('sentry'));
+        $this->assertFalse($app->bound('log.sentry'));
 
         $provider = new SentryServiceProvider($app);
         $provider->boot();
 
-        $this->assertTrue($app->bound('sentry'));
-        $this->assertEquals(get_class($app['sentry']), 'rcrowe\Sentry\Log');
+        $this->assertTrue($app->bound('log.sentry'));
+        $this->assertEquals(get_class($app['log.sentry']), 'rcrowe\Sentry\Log');
     }
 
     public function getApplication()

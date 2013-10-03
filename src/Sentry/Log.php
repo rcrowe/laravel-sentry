@@ -35,6 +35,7 @@ class Log extends Writer
     public function __construct(Application $app = null)
     {
         parent::__construct($app['log']->getMonolog());
+
         $this->setApp($app);
     }
 

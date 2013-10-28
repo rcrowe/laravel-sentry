@@ -22,7 +22,7 @@ Add `rcrowe\laravel-sentry` as a requirement to composer.json:
 ```javascript
 {
     "require": {
-        "rcrowe/laravel-sentry": "0.1.*"
+        "rcrowe/laravel-sentry": "0.2.*"
     }
 }
 ```

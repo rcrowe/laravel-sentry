@@ -1,3 +1,14 @@
+*************************************************
+
+> use [rcrowe\Raven](https://github.com/rcrowe/Raven)
+
+> Better Laravel intergration with async transmittion.
+
+> __laravel-sentry is unsupported!__
+
+*************************************************
+
+
 laravel-sentry
 ==============
 
